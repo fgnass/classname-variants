@@ -31,12 +31,8 @@ const Button = styled("button", {
 function App() {
   return (
     <div className="flex justify-center items-center pt-8 gap-4 flex-wrap">
-      <Button color="accent" onClick={console.log}>
-        Accent
-      </Button>
-      <Button color="neutral" rounded>
-        Neutral + Rounded
-      </Button>
+      <Button onClick={console.log}>Accent</Button>
+      <Button rounded>Neutral + Rounded</Button>
       <Button color="accent" outlined>
         Accent + Outlined
       </Button>

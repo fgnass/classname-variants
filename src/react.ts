@@ -7,15 +7,24 @@ import {
   PropsWithoutRef,
 } from "react";
 
-import { Variants, variants, VariantsConfig, VariantSelection } from ".";
+import {
+  Variants,
+  variants,
+  VariantsConfig,
+  VariantOptions,
+  Simplify,
+} from ".";
 
 export type VariantProps<T> = T extends (props: infer VariantSelection) => any
   ? VariantSelection
   : never;
 
-export function variantProps<V extends Variants>(config: VariantsConfig<V>) {
-  const mkClass = variants(config);
-  return <T extends VariantSelection<V>>(props: T) => {
+export function variantProps<
+  C extends VariantsConfig<V>,
+  V extends Variants = C["variants"]
+>(config: Simplify<C>) {
+  const mkClass = variants<C>(config);
+  return <T extends VariantOptions<C>>(props: T) => {
     const className = mkClass(props);
     const result: any = { className };
     for (let prop in props) {
@@ -23,24 +32,26 @@ export function variantProps<V extends Variants>(config: VariantsConfig<V>) {
         result[prop] = props[prop];
       }
     }
-    return result as { className: string } & Omit<T, keyof V>;
+    return result as { className: string } & Omit<T, keyof C["variants"]>;
   };
 }
 
 type StyledComponent<
   P extends ElementType,
-  V extends Variants
+  C extends VariantsConfig<V>,
+  V extends Variants = C["variants"]
 > = ForwardRefExoticComponent<
-  PropsWithoutRef<ComponentProps<P> & VariantSelection<V>> &
+  PropsWithoutRef<ComponentProps<P> & VariantOptions<C>> &
     React.RefAttributes<P>
 >;
 
-export function styled<P extends ElementType, V extends Variants>(
-  type: P,
-  config: VariantsConfig<V>
-): StyledComponent<P, V> {
+export function styled<
+  P extends ElementType,
+  C extends VariantsConfig<V>,
+  V extends Variants = C["variants"]
+>(type: P, config: Simplify<C>): StyledComponent<P, C> {
   const styledProps = variantProps(config);
-  return forwardRef<P, ComponentProps<P> & VariantSelection<V>>((props, ref) =>
+  return forwardRef<P, ComponentProps<P> & VariantOptions<C>>((props, ref) =>
     createElement(type, { ...styledProps(props), ref })
   );
 }
