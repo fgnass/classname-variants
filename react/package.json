@@ -1,0 +1,5 @@
+{
+  "internal": true,
+  "module": "../lib/react.js",
+  "types": "../lib/react.d.ts"
+}
