@@ -168,6 +168,48 @@ const Button = styled("button", {
 });
 ```
 
+# Tailwind IntelliSense
+
+In order to get auto-completion for the CSS classes themselves, you can use the [Tailwind CSS IntelliSense](https://github.com/tailwindlabs/tailwindcss-intellisense) plugin for VS Code. In order to make it recognize the strings inside your variants config, you have to somehow mark them and configure the plugin accordingly.
+
+One way of doing so is by using tagged template literals:
+
+```ts
+const tw = String.raw;
+
+const button = variants({
+  base: tw`px-5 py-2 text-white`,
+  variants: {
+    color: {
+      neutral: tw`bg-slate-500 hover:bg-slate-400`,
+      accent: tw`bg-teal-500 hover:bg-teal-400`,
+    },
+  },
+});
+```
+
+```ts
+const tw = String.raw;
+
+const button = variants({
+  base: tw.px(5).py(2).text.white,
+  variants: {
+    color: {
+      neutral: tw.bg.slate(500).hover(tw.bg.slate.400),
+      accent: tw.bg.teal(500).hover(tw.bg.teal(400)),
+    },
+  },
+});
+```
+
+You can then add the following line to your `settings.json`:
+
+```
+"tailwindCSS.experimental.classRegex": ["tw`(.+?)`"]
+```
+
+In order to get type coverage even for your Tailwind classes you can use a tool like [tailwind-ts](https://github.com/mathieutu/tailwind-ts).
+
 # License
 
 MIT
