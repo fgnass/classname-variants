@@ -1,6 +1,15 @@
-import React from "react";
+import React, { createElement } from "react";
 import ReactDOM from "react-dom";
 import { styled } from "./src/react";
+
+function CustomComponent(props: { className?: string }) {
+  return <div {...props}>I'm a custom component!</div>;
+}
+
+const Card = styled(CustomComponent, {
+  base: "bg-white p-4 border-2 rounded-lg",
+  variants: {},
+});
 
 const Button = styled("button", {
   base: "px-5 py-2 text-white disabled:bg-gray-400 disabled:text-gray-300",
@@ -39,6 +48,7 @@ function App() {
       <Button color="accent" disabled>
         Disabled
       </Button>
+      <Card />
     </div>
   );
 }

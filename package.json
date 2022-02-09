@@ -30,7 +30,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "npx vite"
+    "start": "npx vite",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "tailwind",
