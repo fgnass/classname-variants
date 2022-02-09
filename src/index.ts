@@ -164,22 +164,3 @@ export function variants<
     return res.filter(Boolean).join(" ");
   };
 }
-
-const className = variants({
-  variants: {
-    size: { small: "" },
-    color: { accent: "foo", neutral: "bar" },
-    rounded: { true: "", false: "" },
-  },
-  defaultVariants: {
-    color: "accent",
-  },
-  compoundVariants: [
-    {
-      variants: { size: "small", rounded: true },
-      className: "compound",
-    },
-  ],
-});
-
-className({ size: "small" });
