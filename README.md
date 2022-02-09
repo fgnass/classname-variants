@@ -6,6 +6,8 @@ The library is framework agnostic and can be used with any kind of CSS flavor.
 
 It is especially useful though if used with [Tailwind](https://tailwindcss.com/) and React, as it provides some [dedicated helpers](#React) and even allows for a _styled-components_ like API, but with [class names instead of styles](#bonus-styled-components-but-with-class-names-)!
 
+[![Edit classname-variants/react](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/classname-variants-react-3bzjl?fontsize=14&hidenavigation=1&theme=dark)
+
 # Basics
 
 Let's aussume we want to build a button component with Tailwind CSS that comes in different sizes and colors.
