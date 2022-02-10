@@ -1,9 +1,15 @@
-import React, { createElement } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { styled } from "./src/react";
 
-function CustomComponent(props: { className?: string }) {
-  return <div {...props}>I'm a custom component!</div>;
+function CustomComponent({
+  title,
+  ...props
+}: {
+  className?: string;
+  title: string;
+}) {
+  return <div {...props}>{title}</div>;
 }
 
 const Card = styled(CustomComponent, {
@@ -48,7 +54,7 @@ function App() {
       <Button color="accent" disabled>
         Disabled
       </Button>
-      <Card />
+      <Card title="Hello" />
     </div>
   );
 }

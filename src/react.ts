@@ -53,7 +53,7 @@ export function variantProps<
 }
 
 type StyledComponent<
-  T extends ElementType<{ className: string }>,
+  T extends ElementType,
   C extends VariantsConfig<V>,
   V extends Variants = C["variants"]
 > = ForwardRefExoticComponent<
@@ -62,7 +62,7 @@ type StyledComponent<
 >;
 
 export function styled<
-  T extends ElementType<{ className: string }>,
+  T extends ElementType,
   C extends VariantsConfig<V>,
   V extends Variants = C["variants"]
 >(type: T, config: Simplify<C>): StyledComponent<T, C> {
