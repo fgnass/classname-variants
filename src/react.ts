@@ -61,10 +61,12 @@ type StyledComponent<
     React.RefAttributes<T>
 >;
 
+type VariantsOf<T> = T extends VariantsConfig<infer V> ? V : {};
+
 export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = VariantsOf<C>
 >(type: T, config: string | Simplify<C>): StyledComponent<T, C> {
   const styledProps =
     typeof config === "string"

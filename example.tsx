@@ -12,7 +12,9 @@ function CustomComponent({
   return <div {...props}>{title}</div>;
 }
 
-const Card = styled(CustomComponent, "bg-white p-4 border-2 rounded-lg");
+const Card = styled("div", "bg-white p-4 border-2 rounded-lg");
+
+const TitleCard = styled(CustomComponent, "bg-white p-4 border-2 rounded-lg");
 
 const Button = styled("button", {
   base: "px-5 py-2 text-white disabled:bg-gray-400 disabled:text-gray-300",
@@ -51,7 +53,11 @@ function App() {
       <Button color="accent" disabled>
         Disabled
       </Button>
-      <Card title="Hello" />
+      <TitleCard title="Hello" />
+      <Card>
+        <h1>Hello</h1>
+        <p>world</p>
+      </Card>
     </div>
   );
 }
