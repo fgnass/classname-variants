@@ -12,10 +12,7 @@ function CustomComponent({
   return <div {...props}>{title}</div>;
 }
 
-const Card = styled(CustomComponent, {
-  base: "bg-white p-4 border-2 rounded-lg",
-  variants: {},
-});
+const Card = styled(CustomComponent, "bg-white p-4 border-2 rounded-lg");
 
 const Button = styled("button", {
   base: "px-5 py-2 text-white disabled:bg-gray-400 disabled:text-gray-300",

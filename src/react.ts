@@ -13,7 +13,7 @@ import {
   VariantsConfig,
   VariantOptions,
   Simplify,
-} from ".";
+} from "./index.js";
 
 /**
  * Utility type to infer the first argument of a variantProps function.
@@ -65,8 +65,11 @@ export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
   V extends Variants = C["variants"]
->(type: T, config: Simplify<C>): StyledComponent<T, C> {
-  const styledProps = variantProps(config);
+>(type: T, config: string | Simplify<C>): StyledComponent<T, C> {
+  const styledProps =
+    typeof config === "string"
+      ? variantProps({ base: config, variants: {} })
+      : variantProps(config);
   return forwardRef<T, ComponentProps<T> & VariantOptions<C>>((props, ref) =>
     createElement(type, { ...styledProps(props), ref })
   );
