@@ -138,7 +138,7 @@ const buttonProps = variantProps({
 This way a compontents' props (or part of them) can be directly spread into the target element. All variant-related props are used to construct the `className` property while all other props are passed through verbatim:
 
 ```tsx
-type Props = SX.IntrinsicElements["button"] &
+type Props = JSX.IntrinsicElements["button"] &
   VariantPropsOf<typeof buttonProps>;
 
 function Button(props: Props) {
