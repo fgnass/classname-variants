@@ -58,6 +58,9 @@ function App() {
         <h1>Hello</h1>
         <p>world</p>
       </Card>
+      <Card as="a" href="https://example.com">
+        Link
+      </Card>
     </div>
   );
 }
