@@ -4,7 +4,7 @@ Stitches-like [variant API](https://stitches.dev/docs/variants) for plain class 
 
 The library is framework agnostic and can be used with any kind of CSS flavor.
 
-It is especially useful though if used with [Tailwind](https://tailwindcss.com/) or [CSS Modules](https://github.com/css-modules/css-modules) in cobmination with React, as it provides some [dedicated helpers](#React) and even allows for a _styled-components_ like API, but with [class names instead of styles](#bonus-styled-components-but-with-class-names-)!
+It is especially useful though if used with [Tailwind](https://tailwindcss.com/) or [CSS Modules](https://github.com/css-modules/css-modules) in combination with React, as it provides some [dedicated helpers](#React) and even allows for a _styled-components_ like API, but with [class names instead of styles](#bonus-styled-components-but-with-class-names-)!
 
 [![Edit classname-variants/react](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/classname-variants-react-3bzjl?fontsize=14&hidenavigation=1&theme=dark)
 
@@ -138,7 +138,7 @@ const buttonProps = variantProps({
 This way a compontents' props (or part of them) can be directly spread into the target element. All variant-related props are used to construct the `className` property while all other props are passed through verbatim:
 
 ```tsx
-type Props = SX.IntrinsicElements["button"] &
+type Props = JSX.IntrinsicElements["button"] &
   VariantPropsOf<typeof buttonProps>;
 
 function Button(props: Props) {
