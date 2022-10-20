@@ -154,7 +154,7 @@ function App() {
 }
 ```
 
-# Bonus: styled-components, but with class names 💅
+# Bonus: styled-components, but with for static CSS 💅
 
 Things can be taken even a step further, resulting in a _styled-components_ like way of defining reusable components:
 
@@ -188,6 +188,32 @@ const Button = styled("button", {
 ```
 
 You can also style other custom React components as long as the accept a `className` prop.
+
+## Polymorphic components with "as"
+
+If you want to keep all the variants you have defined for a component but want to render a different HTML tag or a different custom component, you can use the "as" prop to do so:
+
+```tsx
+import { styled } from "classname-variants/react";
+import styles from "./styles.module.css";
+
+const Button = styled("button", {
+  variants: {
+    //...
+  },
+});
+
+function App() {
+  return (
+    <div>
+      <Button>I'm a button</Button>
+      <Button as="a" href="/">
+        I'm a link!
+      </Button>
+    </div>
+  );
+}
+```
 
 # Tailwind IntelliSense
 
