@@ -195,7 +195,6 @@ If you want to keep all the variants you have defined for a component but want t
 
 ```tsx
 import { styled } from "classname-variants/react";
-import styles from "./styles.module.css";
 
 const Button = styled("button", {
   variants: {
