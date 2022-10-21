@@ -10,7 +10,7 @@ It is especially useful though if used with [Tailwind](https://tailwindcss.com/)
 
 # Basics
 
-Let's aussume we want to build a button component with Tailwind CSS that comes in different sizes and colors.
+Let's assume we want to build a button component with Tailwind CSS that comes in different sizes and colors.
 
 It consists of some _base classes_ that are always present as well as some optional classes that need to be added depending on the desired _variants_.
 
@@ -135,7 +135,7 @@ const buttonProps = variantProps({
 });
 ```
 
-This way a compontents' props (or part of them) can be directly spread into the target element. All variant-related props are used to construct the `className` property while all other props are passed through verbatim:
+This way a component's props (or part of them) can be directly spread into the target element. All variant-related props are used to construct the `className` property while all other props are passed through verbatim:
 
 ```tsx
 type Props = JSX.IntrinsicElements["button"] &
@@ -154,9 +154,9 @@ function App() {
 }
 ```
 
-# Bonus: styled-components, but with for static CSS 💅
+# Bonus: styled-components, but for static CSS 💅
 
-Things can be taken even a step further, resulting in a _styled-components_ like way of defining reusable components:
+Things can be taken even a step further, resulting in a _styled-components_ like way of defining reusable components. Under the hood, this does basically the same as the example above, but also handles _refs_ correctly:
 
 ```tsx
 import { styled } from "classname-variants/react";
@@ -171,7 +171,7 @@ const Button = styled("button", {
 });
 ```
 
-The same can be done with CSS modules:
+Again, this is not limited to tailwind, so you could do the same with CSS modules:
 
 ```tsx
 import { styled } from "classname-variants/react";
@@ -187,7 +187,7 @@ const Button = styled("button", {
 });
 ```
 
-You can also style other custom React components as long as the accept a `className` prop.
+**NOTE:** You can also style other custom React components as long as they accept a `className` prop.
 
 ## Polymorphic components with "as"
 
