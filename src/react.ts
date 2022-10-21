@@ -3,8 +3,8 @@ import {
   createElement,
   ElementType,
   forwardRef,
-  ForwardRefExoticComponent,
-  PropsWithoutRef,
+  ReactElement,
+  Ref,
 } from "react";
 
 import {
@@ -52,27 +52,31 @@ export function variantProps<
   };
 }
 
-type StyledComponent<
-  T extends ElementType,
-  C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
-> = ForwardRefExoticComponent<
-  PropsWithoutRef<ComponentProps<T> & VariantOptions<C>> &
-    React.RefAttributes<T>
->;
-
 type VariantsOf<T> = T extends VariantsConfig<infer V> ? V : {};
+
+type AsProps<T extends ElementType = ElementType> = {
+  as?: T;
+};
+
+type PolymorphicComponentProps<T extends ElementType> = AsProps<T> &
+  Omit<ComponentProps<T>, "as">;
 
 export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
   V extends Variants = VariantsOf<C>
->(type: T, config: string | Simplify<C>): StyledComponent<T, C> {
+>(type: T, config: string | Simplify<C>) {
   const styledProps =
     typeof config === "string"
       ? variantProps({ base: config, variants: {} })
       : variantProps(config);
-  return forwardRef<T, ComponentProps<T> & VariantOptions<C>>((props, ref) =>
-    createElement(type, { ...styledProps(props), ref })
+
+  const Component: <As extends ElementType = T>(
+    props: PolymorphicComponentProps<As> & VariantOptions<C>
+  ) => ReactElement | null = forwardRef(
+    ({ as, ...props }: AsProps, ref: Ref<Element>) => {
+      return createElement(as ?? type, { ...styledProps(props), ref });
+    }
   );
+  return Component;
 }
