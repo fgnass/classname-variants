@@ -52,8 +52,6 @@ export function variantProps<
   };
 }
 
-type VariantsOf<T> = T extends VariantsConfig<infer V> ? V : {};
-
 type AsProps<T extends ElementType = ElementType> = {
   as?: T;
 };
@@ -64,7 +62,7 @@ type PolymorphicComponentProps<T extends ElementType> = AsProps<T> &
 export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
-  V extends Variants = VariantsOf<C>
+  V extends Variants = C["variants"]
 >(type: T, config: string | Simplify<C>) {
   const styledProps =
     typeof config === "string"
