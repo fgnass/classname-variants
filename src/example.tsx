@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { styled } from "./src/react";
+import { styled } from "./react";
 
 function CustomComponent({
   title,
