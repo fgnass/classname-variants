@@ -17,7 +17,7 @@ export type Variants = Record<string, Record<string, string>>;
 /**
  * Configuration including defaults and compound variants.
  */
-export interface VariantsConfig<V extends Variants> {
+export interface VariantsConfig<V extends Variants = {}> {
   base?: string;
   variants: V;
   compoundVariants?: CompoundVariant<V>[];

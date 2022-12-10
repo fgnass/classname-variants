@@ -42,6 +42,46 @@ const Button = styled("button", {
   },
 });
 
+export const ExpectErrors = styled("div", {
+  variants: {
+    color: {
+      neutral: "grey",
+      accent: "hotpink",
+    },
+  },
+  compoundVariants: [
+    {
+      //@ts-expect-error
+      variants: { outlined: true },
+      className: "",
+    },
+  ],
+  defaultVariants: {
+    //@ts-expect-error
+    outlined: true,
+  },
+});
+
+export function WithErrors() {
+  return (
+    <div>
+      {/* @ts-expect-error */}
+      <Button foo>unknown property</Button>
+
+      {/* @ts-expect-error */}
+      <Card foo>Unknown property</Card>
+
+      {/* @ts-expect-error */}
+      <Button color="foo">Invalid variant</Button>
+
+      {/* @ts-expect-error */}
+      <Card as="b" href="https://example.com">
+        B tags don't have a href attribute
+      </Card>
+    </div>
+  );
+}
+
 function App() {
   return (
     <div className="flex justify-center items-center pt-8 gap-4 flex-wrap">
