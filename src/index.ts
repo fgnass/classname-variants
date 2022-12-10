@@ -164,3 +164,8 @@ export function variants<
     return res.filter(Boolean).join(" ");
   };
 }
+
+/**
+ * No-op function to mark template literals as tailwind strings.
+ */
+export const tw = String.raw;

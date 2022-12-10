@@ -2,7 +2,7 @@
 
 Stitches-like [variant API](https://stitches.dev/docs/variants) for plain class names.
 
-The library is framework agnostic and can be used with any kind of CSS flavor.
+The library is framework-agnostic and can be used with any kind of CSS flavor.
 
 It is especially useful though if used with [Tailwind](https://tailwindcss.com/) or [CSS Modules](https://github.com/css-modules/css-modules) in combination with React, as it provides some [dedicated helpers](#React) and even allows for a _styled-components_ like API, but with [class names instead of styles](#bonus-styled-components-but-with-class-names-)!
 
@@ -158,14 +158,14 @@ function App() {
 
 Things can be taken even a step further, resulting in a _styled-components_ like way of defining reusable components. Under the hood, this does basically the same as the example above, but also handles _refs_ correctly:
 
-```tsx
-import { styled } from "classname-variants/react";
+```ts
+import { styled, tw } from "classname-variants/react";
 
 const Button = styled("button", {
   variants: {
     size: {
-      small: "text-xs",
-      large: "text-base",
+      small: tw`text-xs`,
+      large: tw`text-base`,
     },
   },
 });
@@ -173,7 +173,7 @@ const Button = styled("button", {
 
 Again, this is not limited to tailwind, so you could do the same with CSS modules:
 
-```tsx
+```ts
 import { styled } from "classname-variants/react";
 import styles from "./styles.module.css";
 
@@ -187,7 +187,21 @@ const Button = styled("button", {
 });
 ```
 
-**NOTE:** You can also style other custom React components as long as they accept a `className` prop.
+> **Note**
+> You can also style other custom React components as long as they accept a `className` prop.
+
+## Styled components without variants
+
+You can also use the `styled` function to create styled components without any variants at all:
+
+```ts
+import { styled } from "classname-variants/react";
+
+const Button = styled(
+  "button",
+  "border-none rounded px-3 font-sans bg-green-600 text-white hover:bg-green-500"
+);
+```
 
 ## Polymorphic components with "as"
 
@@ -216,12 +230,12 @@ function App() {
 
 # Tailwind IntelliSense
 
-In order to get auto-completion for the CSS classes themselves, you can use the [Tailwind CSS IntelliSense](https://github.com/tailwindlabs/tailwindcss-intellisense) plugin for VS Code. In order to make it recognize the strings inside your variants config, you have to somehow mark them and configure the plugin accordingly.
+In order to get auto-completion for the CSS classes themselves, you can use the [Tailwind CSS IntelliSense](https://github.com/tailwindlabs/tailwindcss-intellisense) plugin for VS Code. In order to make it recognize the strings inside your variants-config, you have to somehow mark them and configure the plugin accordingly.
 
 One way of doing so is by using tagged template literals:
 
 ```ts
-const tw = String.raw;
+import { variants, tw } from "classname-variants";
 
 const button = variants({
   base: tw`px-5 py-2 text-white`,
@@ -239,6 +253,9 @@ You can then add the following line to your `settings.json`:
 ```
 "tailwindCSS.experimental.classRegex": ["tw`(.+?)`"]
 ```
+
+> **Note**
+> The `tw` helper function is just an alias for [`String.raw`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw).
 
 In order to get type coverage even for your Tailwind classes you can use a tool like [tailwind-ts](https://github.com/mathieutu/tailwind-ts).
 
