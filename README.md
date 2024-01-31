@@ -187,7 +187,7 @@ const Button = styled("button", {
 });
 ```
 
-> **Note**
+> [!TIP]
 > You can also style other custom React components as long as they accept a `className` prop.
 
 ## Styled components without variants
@@ -254,10 +254,10 @@ You can then add the following line to your `settings.json`:
 "tailwindCSS.experimental.classRegex": ["tw`(.+?)`"]
 ```
 
-> **Note**
-> The `tw` helper function is just an alias for [`String.raw`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw).
+> [!NOTE]
+> The `tw` helper function is just an alias for [`String.raw()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw) which has the nice side effect backslashes are not treated as [escape character in JSX](https://tailwindcss.com/docs/adding-custom-styles#handling-whitespace).
 
-In order to get type coverage even for your Tailwind classes you can use a tool like [tailwind-ts](https://github.com/mathieutu/tailwind-ts).
+In order to get type coverage even for your Tailwind classes, you can use a tool like [tailwind-ts](https://github.com/mathieutu/tailwind-ts).
 
 # License
 

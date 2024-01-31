@@ -101,6 +101,7 @@ function App() {
       <Card as="a" href="https://example.com">
         Link
       </Card>
+      <Card as={CustomComponent} title="Test" />
     </div>
   );
 }
