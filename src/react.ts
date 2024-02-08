@@ -44,7 +44,7 @@ export function variantProps<
     }
 
     // Add the optionally passed className prop for chaining
-    result.className = [props.className, variantClassName(props)]
+    result.className = [variantClassName(props), props.className]
       .filter(Boolean)
       .join(" ");
 
