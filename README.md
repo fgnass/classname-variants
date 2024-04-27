@@ -6,7 +6,7 @@ Library to create type-safe components that render their class name based on a s
 
 Here is an example that uses React and Tailwind CSS:
 
-```ts
+```tsx
 import { styled } from "classname-variants/react";
 
 const Button = styled("button", {
@@ -30,7 +30,7 @@ While the library has been designed with tools like Tailwind in mind, it can be 
 
 ## Preact + CSS modules
 
-```ts
+```tsx
 import { styled } from "classname-variants/preact";
 import styles from "./styles.module.css";
 
@@ -111,7 +111,7 @@ Variants can be typed as `boolean` by using `true` / `false` as key:
 
 The `compoundVariants` option can be used to apply class names based on a combination of other variants:
 
-```tsx
+```ts
 {
   variants: {
     color: {
@@ -170,7 +170,7 @@ Use the `base` property to specify class names that should always be applied:
 Sometimes it can be useful to define styled components that
 don't have any variants, which can be done like this:
 
-```ts
+```tsx
 import { styled } from "classname-variants/react";
 
 const Button = styled("button", "bg-transparent border p-2");
@@ -180,7 +180,7 @@ const Button = styled("button", "bg-transparent border p-2");
 
 You can style any custom React/Preact component as long as they accept a `className` prop (or `class` in case of Preact).
 
-```ts
+```tsx
 function MyComponent(props) {
   return <div {...props}>I'm a stylable custom component.</div>;
 }
