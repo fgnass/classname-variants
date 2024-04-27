@@ -2,6 +2,15 @@
 
 Library to create type-safe components that render their class name based on a set of variants.
 
+## Features
+
+- ⚛️ Supports React, Preact and vanilla DOM
+- 🛡️ Fully type-safe and excellent auto completion support
+- ✅ Supports both optional and required variants
+- 🪶 Light-weight without any dependencies
+
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/classname-variants)
+
 # Examples
 
 Here is an example that uses React and Tailwind CSS:
@@ -138,7 +147,7 @@ The `compoundVariants` option can be used to apply class names based on a combin
 
 ### Default variants
 
-You can use the `defaultVariants` property to set defaults:
+If you define a variant it becomes a required prop unless you specify a default (or the variant is boolean). You can use the `defaultVariants` property to specify defaults:
 
 ```ts
 {
