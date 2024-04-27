@@ -1,20 +1,56 @@
-# classname-variants
+# classname-variants 🌈
 
-Stitches-like [variant API](https://stitches.dev/docs/variants) for plain class names.
+Library to create type-safe components that render their class name based on a set of variants.
 
-The library is framework-agnostic and can be used with any kind of CSS flavor.
+# Examples
 
-It is especially useful though if used with [Tailwind](https://tailwindcss.com/) or [CSS Modules](https://github.com/css-modules/css-modules) in combination with React, as it provides some [dedicated helpers](#React) and even allows for a _styled-components_ like API, but with [class names instead of styles](#bonus-styled-components-but-with-class-names-)!
+Here is an example that uses React and Tailwind CSS:
 
-[![Edit classname-variants/react](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/classname-variants-react-3bzjl?fontsize=14&hidenavigation=1&theme=dark)
+```ts
+import { styled } from "classname-variants/react";
 
-# Basics
+const Button = styled("button", {
+  variants: {
+    size: {
+      small: "text-xs",
+      large: "text-lg",
+    },
+    primary: {
+      true: "bg-teal-500 text-white",
+    },
+  },
+});
 
-Let's assume we want to build a button component with Tailwind CSS that comes in different sizes and colors.
+function UsageExample() {
+  return <Button primary size="large" />;
+}
+```
 
-It consists of some _base classes_ that are always present as well as some optional classes that need to be added depending on the desired _variants_.
+While the library has been designed with tools like Tailwind in mind, it can be also used with custom classes or CSS modules:
 
-```tsx
+## Preact + CSS modules
+
+```ts
+import { styled } from "classname-variants/preact";
+import styles from "./styles.module.css";
+
+const Button = styled("button", {
+  variants: {
+    size: {
+      small: styles.small,
+      large: styles.large,
+    },
+  },
+});
+```
+
+## Vanilla DOM
+
+The core of the library is completely framework-agnostic:
+
+```ts
+import { variants } from "classname-variants";
+
 const button = variants({
   base: "rounded text-white",
   variants: {
@@ -22,50 +58,61 @@ const button = variants({
       brand: "bg-sky-500",
       accent: "bg-teal-500",
     },
-    size: {
-      small: "px-5 py-3 text-xs",
-      large: "px-6 py-4 text-base",
-    },
   },
 });
-```
 
-The result is a function that expects an object which specifies what variants should be selected. When called, it returns a string containing the respective class names:
-
-```ts
 document.write(`
-  <button class="${button({
-    color: "accent",
-    size: "large",
-  })}">
+  <button class="${button({ color: "accent" })}">
     Click Me!
   </button>
 `);
 ```
 
-# Advanced Usage
+# API
 
-## Boolean variants
+### Defining variants
 
-Variants can be of type `boolean` by using `"true"` as the key:
+You can add any number of variants by using the `variants` key.
 
-```tsx
-const button = variants({
-  base: "text-white",
+```ts
+{
   variants: {
-    rounded: {
-      true: "rounded-full",
+    color: {
+      primary: "bg-teal",
+      secondary: "bg-indigo",
+      danger: "bg-red"
     },
-  },
-});
+    size: {
+      small: "text-sm",
+      medium: "text-md",
+      large: "text-lg",
+    }
+  }
+}
 ```
 
-## Compound variants
+### Boolean variants
 
-The `compoundVariants` option can be used to apply class names based on a combination of other variants.
+Variants can be typed as `boolean` by using `true` / `false` as key:
+
+```ts
+{
+  variants: {
+    primary: {
+      true: "bg-teal-500",
+    },
+  },
+}
+```
+
+```ts
+<Button primary>Click Me!</Button>
+```
+
+The `compoundVariants` option can be used to apply class names based on a combination of other variants:
 
 ```tsx
-const button = variants({
+{
   variants: {
     color: {
       neutral: "bg-gray-200",
@@ -84,128 +131,71 @@ const button = variants({
       className: "border-teal-500",
     },
   ],
-});
-```
-
-## Default variants
-
-The `defaultVariants` option can be used to select a variant by default:
-
-```ts
-const button = variants({
-  variants: {
-    color: {
-      neutral: "bg-gray-200",
-      accent: "bg-teal-400",
-    },
-  },
-  defaultVariants: {
-    color: "neutral",
-  },
-});
-```
-
-# React
-
-The library contains utility functions that are useful for writing React components.
-
-It works much like `variants()` but instead of a class name string, the resulting function returns an object with props.
-
-```ts
-import { variantProps } from "classname-variants/react";
-
-const buttonProps = variantProps({
-  base: "rounded-md text-white",
-  variants: {
-    color: {
-      brand: "bg-sky-500",
-      accent: "bg-teal-500",
-    },
-    size: {
-      small: "px-5 py-3 text-xs",
-      large: "px-6 py-4 text-base",
-    },
-    rounded: {
-      true: "rounded-full",
-    },
-  },
-  defaultVariants: {
-    color: "brand",
-  },
-});
-```
-
-This way a component's props (or part of them) can be directly spread into the target element. All variant-related props are used to construct the `className` property while all other props are passed through verbatim:
-
-```tsx
-type Props = JSX.IntrinsicElements["button"] &
-  VariantPropsOf<typeof buttonProps>;
-
-function Button(props: Props) {
-  return <button {...buttonProps(props)} />;
-}
-
-function App() {
-  return (
-    <Button size="small" color="accent" onClick={console.log}>
-      Click Me!
-    </Button>
-  );
 }
 ```
 
-# Bonus: styled-components, but for static CSS 💅
+### Default variants
 
-Things can be taken even a step further, resulting in a _styled-components_ like way of defining reusable components. Under the hood, this does basically the same as the example above, but also handles _refs_ correctly:
-
-```ts
-import { styled, tw } from "classname-variants/react";
-
-const Button = styled("button", {
-  variants: {
-    size: {
-      small: tw`text-xs`,
-      large: tw`text-base`,
-    },
-  },
-});
-```
-
-Again, this is not limited to tailwind, so you could do the same with CSS modules:
+You can use the `defaultVariants` property to set defaults:
 
 ```ts
-import { styled } from "classname-variants/react";
-import styles from "./styles.module.css";
-
-const Button = styled("button", {
+{
   variants: {
-    size: {
-      small: styles.small,
-      large: styles.large,
+    color: {
+      primary: "bg-teal-300",
+      secondary: "bg-teal-100"
     },
   },
-});
+  defaultVariants: {
+    color: "secondary",
+  }
+}
 ```
 
-> [!TIP]
-> You can also style other custom React components as long as they accept a `className` prop.
+### Base class
 
-## Styled components without variants
+Use the `base` property to specify class names that should always be applied:
 
-You can also use the `styled` function to create styled components without any variants at all:
+```ts
+{
+  base: "text-black rounded-full px-2",
+  variants: {
+    // ...
+  }
+}
+```
+
+### Components without variants
+
+Sometimes it can be useful to define styled components that
+don't have any variants, which can be done like this:
 
 ```ts
 import { styled } from "classname-variants/react";
 
-const Button = styled(
-  "button",
-  "border-none rounded px-3 font-sans bg-green-600 text-white hover:bg-green-500"
-);
+const Button = styled("button", "bg-transparent border p-2");
 ```
 
-## Polymorphic components with "as"
+### Styling custom components
 
-If you want to keep all the variants you have defined for a component but want to render a different HTML tag or a different custom component, you can use the "as" prop to do so:
+You can style any custom React/Preact component as long as they accept a `className` prop (or `class` in case of Preact).
+
+```ts
+function MyComponent(props) {
+  return <div {...props}>I'm a stylable custom component.</div>;
+}
+
+const MyStyledComponent = styled(MyComponent, {
+  base: "some-class",
+  variants: {
+    // ...
+  },
+});
+```
+
+### Polymorphic components with "as"
+
+If you want to keep all the variants you have defined for a component but want to render a different HTML tag or a different custom component, you can use the `as` prop to do so:
 
 ```tsx
 import { styled } from "classname-variants/react";
@@ -215,17 +205,20 @@ const Button = styled("button", {
     //...
   },
 });
+```
 
-function App() {
-  return (
-    <div>
-      <Button>I'm a button</Button>
-      <Button as="a" href="/">
-        I'm a link!
-      </Button>
-    </div>
-  );
-}
+The component can then be rendered as button or as anchor or even as custom component exposed by some router:
+
+```tsx
+<>
+  <Button>I'm a button</Button>
+  <Button as="a" href="/">
+    I'm a link!
+  </Button>
+  <Button as={Link} to="/">
+    I'm a styled Link component
+  </Button>
+</>
 ```
 
 # Tailwind IntelliSense
