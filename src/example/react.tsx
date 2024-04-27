@@ -1,6 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { styled } from "./react";
+import { styled } from "../react";
 
 function CustomComponent({
   title,
@@ -82,7 +81,7 @@ export function WithErrors() {
   );
 }
 
-function App() {
+export function ReactApp() {
   return (
     <div className="flex justify-center items-center pt-8 gap-4 flex-wrap">
       <Button onClick={console.log}>Accent</Button>
@@ -105,5 +104,3 @@ function App() {
     </div>
   );
 }
-
-ReactDOM.render(<App />, document.getElementById("root"));
