@@ -26,6 +26,8 @@ function UsageExample() {
 }
 ```
 
+[![Edit classname-variants/react](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/classname-variants-react-3bzjl?fontsize=14&hidenavigation=1&theme=dark)
+
 While the library has been designed with tools like Tailwind in mind, it can be also used with custom classes or CSS modules:
 
 ## Preact + CSS modules
