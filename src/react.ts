@@ -58,8 +58,9 @@ type AsProps<T extends ElementType = ElementType> = {
   as?: T;
 };
 
-type PolymorphicComponentProps<T extends ElementType> = AsProps<T> &
-  Omit<ComponentProps<T>, "as">;
+type PolymorphicComponentProps<V, T extends ElementType> = AsProps<T> &
+  Omit<ComponentProps<T>, "as" | keyof V> &
+  V;
 
 export function styled<
   T extends ElementType,
@@ -72,7 +73,7 @@ export function styled<
       : variantProps(config);
 
   const Component: <As extends ElementType = T>(
-    props: PolymorphicComponentProps<As> & VariantOptions<C>
+    props: PolymorphicComponentProps<VariantOptions<C>, As>
   ) => ReactElement | null = forwardRef(
     ({ as, ...props }: AsProps, ref: Ref<Element>) => {
       return createElement(as ?? type, { ...styledProps(props), ref });

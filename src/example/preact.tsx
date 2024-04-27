@@ -24,6 +24,10 @@ const Button = styled("button", {
       neutral: "bg-slate-500 hover:bg-slate-400",
       accent: "bg-teal-500 hover:bg-teal-400",
     },
+    size: {
+      small: "text-sm",
+      medium: "text-md",
+    },
     outlined: {
       true: "border-2",
     },
@@ -67,13 +71,20 @@ export function WithErrors() {
   return (
     <div>
       {/* @ts-expect-error */}
-      <Button foo>unknown property</Button>
+      <Button foo size="medium">
+        unknown property
+      </Button>
 
       {/* @ts-expect-error */}
       <Card foo>Unknown property</Card>
 
       {/* @ts-expect-error */}
-      <Button color="foo">Invalid variant</Button>
+      <Button size="medium" color="foo">
+        Invalid variant
+      </Button>
+
+      {/* @ts-expect-error */}
+      <Button>Missing size</Button>
     </div>
   );
 }
@@ -81,12 +92,16 @@ export function WithErrors() {
 export function PreactApp() {
   return (
     <div className="flex justify-center items-center pt-8 gap-4 flex-wrap">
-      <Button onClick={console.log}>Accent</Button>
-      <Button rounded>Neutral + Rounded</Button>
-      <Button color="accent" outlined>
+      <Button size="medium" onClick={console.log}>
+        Accent
+      </Button>
+      <Button size="medium" rounded>
+        Neutral + Rounded
+      </Button>
+      <Button size="medium" color="accent" outlined>
         Accent + Outlined
       </Button>
-      <Button color="accent" disabled>
+      <Button size="medium" color="accent" disabled>
         Disabled
       </Button>
       <TitleCard title="Hello" />
