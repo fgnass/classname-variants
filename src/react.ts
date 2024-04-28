@@ -13,6 +13,7 @@ import {
   VariantsConfig,
   VariantOptions,
   Simplify,
+  classNames,
 } from "./index.js";
 
 /**
@@ -44,9 +45,10 @@ export function variantProps<
     }
 
     // Add the optionally passed className prop for chaining
-    result.className = [variantClassName(props), props.className]
-      .filter(Boolean)
-      .join(" ");
+    result.className = classNames.combine(
+      variantClassName(props),
+      props.className
+    );
 
     return result as { className: string } & Omit<P, keyof C["variants"]>;
   };

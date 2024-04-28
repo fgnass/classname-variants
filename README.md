@@ -7,7 +7,8 @@ Library to create type-safe components that render their class name based on a s
 - ⚛️ Supports React, Preact and vanilla DOM
 - 🛡️ Fully type-safe and excellent auto completion support
 - ✅ Supports both optional and required variants
-- 🪶 Light-weight without any dependencies
+- 🔗 Supports custom strategies like [tailwind-merge](https://www.npmjs.com/package/tailwind-merge)
+- 🪶 [Light-weight](https://bundlephobia.com/package/classname-variants) without any dependencies
 
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/classname-variants)
 
@@ -230,6 +231,23 @@ The component can then be rendered as button or as anchor or even as custom comp
     I'm a styled Link component
   </Button>
 </>
+```
+
+### Using a custom strategy to combine class names
+
+The built-in strategy for combining multiple class names into one string is simple and straightforward:
+
+```ts
+(classes) => classes.filter(Boolean).join(" ");
+```
+
+If you [want](https://github.com/dcastil/tailwind-merge/blob/main/docs/when-and-how-to-use-it.md), you can use a custom strategy like tailwind-merge instead:
+
+```ts
+import { classNames } from "classname-variants";
+import { twMerge } from "tailwind-merge";
+
+classNames.combine = twMerge;
 ```
 
 # Tailwind IntelliSense

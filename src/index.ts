@@ -131,6 +131,11 @@ export type Simplify<T> = {
   [K in keyof T]: T[K];
 };
 
+export const classNames = {
+  combine: (...classes: Array<string | undefined | null | false | 0>) =>
+    classes.filter(Boolean).join(" "),
+};
+
 export function variants<
   C extends VariantsConfig<V>,
   V extends Variants = C["variants"]
@@ -143,7 +148,7 @@ export function variants<
   };
 
   return (props: VariantOptions<C>) => {
-    const res = [base];
+    const classes: string[] = base ? [base] : [];
 
     const getSelected = (name: keyof V) =>
       (props as any)[name] ??
@@ -152,16 +157,16 @@ export function variants<
 
     for (let name in variants) {
       const selected = getSelected(name);
-      if (selected !== undefined) res.push(variants[name]?.[selected]);
+      if (selected !== undefined) classes.push(variants[name]?.[selected]);
     }
 
     for (let { variants, className } of compoundVariants ?? []) {
       const isSelected = (name: string) => getSelected(name) === variants[name];
       if (Object.keys(variants).every(isSelected)) {
-        res.push(className);
+        classes.push(className);
       }
     }
-    return res.filter(Boolean).join(" ");
+    return classNames.combine(...classes);
   };
 }
 
