@@ -45,6 +45,14 @@ const Button = styled("button", {
   },
 });
 
+export const StyledWithoutVariants = styled("div", {
+  base: "bg-white",
+});
+
+export const TestBaseOnly = styled("div", {
+  base: "text-red-500 font-bold",
+});
+
 export const ExpectErrors = styled("div", {
   variants: {
     color: {

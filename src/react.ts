@@ -68,14 +68,45 @@ export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
   V extends Variants = VariantsOf<C, C["variants"]>
->(type: T, config: string | Simplify<C>) {
+>(
+  type: T,
+  config: string | { base: string } | Simplify<C>
+): <As extends ElementType = T>(
+  props: PolymorphicComponentProps<
+    typeof config extends string
+      ? {}
+      : typeof config extends {
+          base: string;
+          variants?: undefined;
+          compoundVariants?: undefined;
+          defaultVariants?: undefined;
+        }
+      ? {}
+      : VariantOptions<C>,
+    As
+  >
+) => ReactElement | null {
   const styledProps =
     typeof config === "string"
       ? variantProps({ base: config, variants: {} })
-      : variantProps(config);
+      : "variants" in config
+      ? variantProps(config as Simplify<C>)
+      : variantProps({ base: config.base, variants: {} });
 
   const Component: <As extends ElementType = T>(
-    props: PolymorphicComponentProps<VariantOptions<C>, As>
+    props: PolymorphicComponentProps<
+      typeof config extends string
+        ? {}
+        : typeof config extends {
+            base: string;
+            variants?: undefined;
+            compoundVariants?: undefined;
+            defaultVariants?: undefined;
+          }
+        ? {}
+        : VariantOptions<C>,
+      As
+    >
   ) => ReactElement | null = forwardRef(
     ({ as, ...props }: AsProps, ref: Ref<Element>) => {
       return createElement(as ?? type, { ...styledProps(props), ref });
