@@ -281,6 +281,10 @@ You can then add the following line to your `settings.json`:
 
 In order to get type coverage even for your Tailwind classes, you can use a tool like [tailwind-ts](https://github.com/mathieutu/tailwind-ts).
 
+# For AI Assistants
+
+For comprehensive technical documentation optimized for LLMs, see [`llms.txt`](./llms.txt).
+
 # License
 
 MIT

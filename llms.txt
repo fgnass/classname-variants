@@ -1,0 +1,163 @@
+# classname-variants
+
+A TypeScript library for creating type-safe variant-based className generators for React, Preact, and vanilla DOM.
+
+## Project Overview
+
+This library provides a variant API for generating class names based on component props. It's designed to work with CSS frameworks like Tailwind CSS but supports any class naming system. The core concept is defining variants (different states/styles) and having the library generate the appropriate class names based on provided props.
+
+## Architecture
+
+### Core Module (src/index.ts)
+- `variants()` - Core function that creates a className generator based on variant configuration
+- `VariantsConfig` - TypeScript interface defining the structure of variant configurations
+- `classNames.combine` - Default strategy for combining class names (can be overridden with tools like tailwind-merge)
+- `tw` - Tagged template literal helper for Tailwind CSS IntelliSense
+
+### Framework Integrations
+- `src/react.ts` - React-specific bindings with `styled()` and `variantProps()` functions
+- `src/preact.ts` - Preact-specific bindings (similar to React but uses Preact's JSX)
+
+### Key Features
+- Type-safe variant definitions with full TypeScript inference
+- Support for required and optional variants
+- Boolean variants (true/false)
+- Default variants
+- Compound variants (combinations of multiple variant states)
+- Polymorphic components with "as" prop
+- Custom class name combination strategies
+
+## File Structure
+
+```
+src/
+├── index.ts          # Core variant logic and types
+├── react.ts          # React bindings (styled, variantProps)
+├── preact.ts         # Preact bindings (similar to React)
+└── example/          # Example implementations
+    ├── index.ts      # Vanilla example
+    ├── react.tsx     # React example
+    └── preact.tsx    # Preact example
+```
+
+## Package Structure
+
+- ESM modules only
+- Multiple entry points: main, react, preact
+- Fully typed with TypeScript declarations
+
+## Key Concepts
+
+### Variant Configuration
+```ts
+{
+  base?: string,                    // Always applied classes
+  variants: {                       // Variant definitions
+    [variantName]: {
+      [optionName]: "class-names"
+    }
+  },
+  defaultVariants?: {...},          // Default values
+  compoundVariants?: [...]          // Conditional class combinations
+}
+```
+
+### TypeScript Magic
+The library uses advanced TypeScript features to:
+- Infer variant prop types from configuration
+- Make variants required unless they have defaults or are boolean
+- Convert "true"/"false" keys to boolean props
+- Provide full autocomplete and type checking
+
+## Usage Examples
+
+### NPM Installation & Imports
+```bash
+npm install classname-variants
+```
+
+```ts
+// Vanilla/core
+import { variants, tw } from "classname-variants"
+
+// React
+import { styled, tw } from "classname-variants/react"
+
+// Preact  
+import { styled, tw } from "classname-variants/preact"
+
+// Low-level API (rarely used directly)
+import { variantProps } from "classname-variants/react"
+import { variantProps } from "classname-variants/preact"
+```
+
+### Styled Components Without Variants
+Simple string-based styling for components that don't need variants:
+
+```tsx
+const Card = styled("div", "bg-white p-4 border-2 rounded-lg");
+const CustomCard = styled(CustomComponent, "bg-white p-4 border-2 rounded-lg");
+```
+
+### Polymorphic Components with "as" Prop
+Change the underlying element/component while keeping the same styles:
+
+```tsx
+const Button = styled("button", { variants: {...} });
+
+// Usage
+<Button>I'm a button</Button>
+<Button as="a" href="/">I'm a link!</Button>
+<Button as={Link} to="/">I'm a router Link</Button>
+```
+
+### Tailwind CSS Integration
+
+#### Using tailwind-merge for Conflict Resolution
+```ts
+import { classNames } from "classname-variants";
+import { twMerge } from "tailwind-merge";
+
+// Override default combination strategy
+classNames.combine = twMerge;
+```
+
+#### IDE Support with Tagged Templates
+```ts
+import { variants, tw } from "classname-variants";
+
+const button = variants({
+  base: tw`px-5 py-2 text-white`,
+  variants: {
+    color: {
+      neutral: tw`bg-slate-500 hover:bg-slate-400`,
+      accent: tw`bg-teal-500 hover:bg-teal-400`,
+    },
+  },
+});
+```
+
+Add to VS Code settings.json:
+```json
+"tailwindCSS.experimental.classRegex": ["tw`(.+?)`"]
+```
+
+## Advantages vs Alternatives
+
+### vs clsx/classnames
+- **Type Safety**: Full TypeScript inference for variant props
+- **Variant System**: Built-in support for component variants vs manual conditional logic
+- **Default Values**: Automatic handling of default variants
+- **Compound Variants**: Built-in support for variant combinations
+
+### vs class-variance-authority (cva)
+- **Zero Dependencies**: No external dependencies vs cva's clsx dependency
+- **Framework Integration**: Built-in React/Preact components with `styled()` API
+- **Polymorphic Support**: Native "as" prop support for component flexibility
+- **TypeScript Focus**: Designed TypeScript-first with advanced type inference
+
+## Dependencies
+
+- Zero runtime dependencies
+- Development dependencies: React, Preact, TypeScript
+- Designed to work with any CSS framework (Tailwind, CSS modules, etc.)

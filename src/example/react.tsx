@@ -96,7 +96,7 @@ export function ReactApp() {
   return (
     <div className="flex justify-center items-center pt-8 gap-4 flex-wrap">
       <Button size="medium" onClick={console.log}>
-        Accent
+        Neutral
       </Button>
       <Button size="medium" rounded>
         Neutral + Rounded
