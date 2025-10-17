@@ -13,7 +13,16 @@ function CustomComponent({
 
 const Card = styled("div", "bg-white p-4 border-2 rounded-lg");
 
-const TitleCard = styled(CustomComponent, "bg-white p-4 border-2 rounded-lg");
+type CardProps = Parameters<typeof Card>[0];
+type CardAs = CardProps["as"];
+const _cardAsShouldBeGeneric: CardAs = "a";
+
+const TitleCard = styled(CustomComponent, {
+  base: "bg-white p-4 border-2 rounded-lg",
+  defaultProps: {
+    title: "Default Title",
+  },
+});
 
 const Button = styled("button", {
   base: "px-5 py-2 text-white disabled:bg-gray-400 disabled:text-gray-300",
@@ -42,6 +51,9 @@ const Button = styled("button", {
   ],
   defaultVariants: {
     color: "neutral",
+  },
+  defaultProps: {
+    type: "button",
   },
 });
 
@@ -115,14 +127,13 @@ export function ReactApp() {
       <Button size="medium" color="accent" disabled>
         Disabled
       </Button>
+      <TitleCard />
       <TitleCard title="Hello" />
       <Card>
         <h1>Hello</h1>
         <p>world</p>
       </Card>
-      <Card as="a" href="https://example.com">
-        Link
-      </Card>
+      <Card as="a">Link</Card>
       <Card as={CustomComponent} title="Test" />
     </div>
   );

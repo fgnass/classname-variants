@@ -60,6 +60,19 @@ type AsProps<T extends ElementType = ElementType> = {
   as?: T;
 };
 
+type CleanDefaults<Defaults> = Exclude<Defaults, undefined>;
+type DefaultedKeys<Props, Defaults> = Extract<
+  keyof CleanDefaults<Defaults>,
+  keyof Props
+>;
+
+type WithDefaultProps<Props, Defaults> = [CleanDefaults<Defaults>] extends [
+  never
+]
+  ? Props
+  : Omit<Props, DefaultedKeys<Props, Defaults>> &
+      Partial<Pick<Props, DefaultedKeys<Props, Defaults>>>;
+
 type PolymorphicComponentProps<V, T extends ElementType> = AsProps<T> &
   Omit<ComponentProps<T>, "as" | keyof V> &
   V;
@@ -67,34 +80,17 @@ type PolymorphicComponentProps<V, T extends ElementType> = AsProps<T> &
 export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
-  V extends Variants = VariantsOf<C, C["variants"]>
+  V extends Variants = VariantsOf<C, C["variants"]>,
+  Defaults extends Partial<ComponentProps<T>> | undefined = undefined
 >(
   type: T,
-  config: string | { base: string } | Simplify<C>
+  config:
+    | string
+    | { base: string; defaultProps?: Defaults }
+    | (Simplify<C> & { defaultProps?: Defaults })
 ): <As extends ElementType = T>(
-  props: PolymorphicComponentProps<
-    typeof config extends string
-      ? {}
-      : typeof config extends {
-          base: string;
-          variants?: undefined;
-          compoundVariants?: undefined;
-          defaultVariants?: undefined;
-        }
-      ? {}
-      : VariantOptions<C>,
-    As
-  >
-) => ReactElement | null {
-  const styledProps =
-    typeof config === "string"
-      ? variantProps({ base: config, variants: {} })
-      : "variants" in config
-      ? variantProps(config as Simplify<C>)
-      : variantProps({ base: config.base, variants: {} });
-
-  const Component: <As extends ElementType = T>(
-    props: PolymorphicComponentProps<
+  props: WithDefaultProps<
+    PolymorphicComponentProps<
       typeof config extends string
         ? {}
         : typeof config extends {
@@ -106,12 +102,66 @@ export function styled<
         ? {}
         : VariantOptions<C>,
       As
-    >
-  ) => ReactElement | null = forwardRef(
-    ({ as, ...props }: AsProps, ref: Ref<Element>) => {
-      return createElement(as ?? type, { ...styledProps(props), ref });
+    >,
+    Defaults
+  >
+) => ReactElement | null {
+  const styledProps =
+    typeof config === "string"
+      ? variantProps({ base: config, variants: {} })
+      : "variants" in (config as Exclude<typeof config, string>)
+      ? variantProps(config as Simplify<C>)
+      : variantProps({
+          base: (config as Exclude<typeof config, string> & { base: string }).base,
+          variants: {},
+        });
+
+  const defaultProps =
+    typeof config === "string"
+      ? undefined
+      : (config.defaultProps as Defaults);
+
+  const toRecord = (value: unknown): Record<string, unknown> =>
+    value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
+  const readClassName = (value: unknown) =>
+    typeof value === "string" ? value : undefined;
+
+  const Component = forwardRef(
+    ({ as, ...props }: AsProps & Record<string, unknown>, ref: Ref<Element>) => {
+      const defaultsRecord = toRecord(defaultProps);
+      const propsRecord = props;
+
+      const merged = {
+        ...defaultsRecord,
+        ...propsRecord,
+      } as VariantPropsOf<typeof styledProps> & Record<string, unknown>;
+
+      merged.className = classNames.combine(
+        readClassName(defaultsRecord.className),
+        readClassName(propsRecord.className)
+      );
+
+      return createElement(as ?? type, { ...styledProps(merged), ref });
     }
-  );
+  ) as <As extends ElementType = T>(
+    props: WithDefaultProps<
+      PolymorphicComponentProps<
+        typeof config extends string
+          ? {}
+          : typeof config extends {
+              base: string;
+              variants?: undefined;
+              compoundVariants?: undefined;
+              defaultVariants?: undefined;
+            }
+          ? {}
+          : VariantOptions<C>,
+        As
+      >,
+      Defaults
+    >
+  ) => ReactElement | null;
   return Component;
 }
 

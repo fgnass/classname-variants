@@ -15,7 +15,12 @@ function CustomComponent({
 
 const Card = styled("div", "bg-white p-4 border-2 rounded-lg");
 
-const TitleCard = styled(CustomComponent, "bg-white p-4 border-2 rounded-lg");
+const TitleCard = styled(CustomComponent, {
+  base: "bg-white p-4 border-2 rounded-lg",
+  defaultProps: {
+    title: "Default Title",
+  },
+});
 
 const Button = styled("button", {
   base: "px-5 py-2 text-white disabled:bg-gray-400 disabled:text-gray-300",
@@ -44,6 +49,9 @@ const Button = styled("button", {
   ],
   defaultVariants: {
     color: "neutral",
+  },
+  defaultProps: {
+    type: "button",
   },
 });
 
@@ -104,6 +112,7 @@ export function PreactApp() {
       <Button size="medium" color="accent" disabled>
         Disabled
       </Button>
+      <TitleCard />
       <TitleCard title="Hello" />
       <Card>
         <h1>Hello</h1>

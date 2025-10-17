@@ -15,8 +15,8 @@ This library provides a variant API for generating class names based on componen
 - `tw` - Tagged template literal helper for Tailwind CSS IntelliSense
 
 ### Framework Integrations
-- `src/react.ts` - React-specific bindings with `styled()` and `variantProps()` functions
-- `src/preact.ts` - Preact-specific bindings (similar to React but uses Preact's JSX)
+- `src/react.ts` - React-specific bindings with `styled()` and `variantProps()` functions, including runtime merging and type inference for `defaultProps`
+- `src/preact.ts` - Preact-specific bindings (similar to React but uses Preact's JSX) with equivalent `defaultProps` support
 
 ### Key Features
 - Type-safe variant definitions with full TypeScript inference
@@ -25,6 +25,7 @@ This library provides a variant API for generating class names based on componen
 - Default variants
 - Compound variants (combinations of multiple variant states)
 - Polymorphic components with "as" prop
+- Optional `defaultProps` with strong typing (defaulted props become optional while respecting polymorphic `as`)
 - Custom class name combination strategies
 
 ## File Structure
@@ -58,6 +59,7 @@ src/
     }
   },
   defaultVariants?: {...},          // Default values
+  defaultProps?: {...},             // Defaulted non-variant props (e.g. { type: "button" })
   compoundVariants?: [...]          // Conditional class combinations
 }
 ```
@@ -67,6 +69,7 @@ The library uses advanced TypeScript features to:
 - Infer variant prop types from configuration
 - Make variants required unless they have defaults or are boolean
 - Convert "true"/"false" keys to boolean props
+- Infer optionality for props supplied via `defaultProps` while preserving `as` polymorphism
 - Provide full autocomplete and type checking
 
 ## Usage Examples
@@ -97,6 +100,22 @@ Simple string-based styling for components that don't need variants:
 ```tsx
 const Card = styled("div", "bg-white p-4 border-2 rounded-lg");
 const CustomCard = styled(CustomComponent, "bg-white p-4 border-2 rounded-lg");
+```
+
+### Default Props in Styled Components
+Provide defaults for non-variant props while keeping TypeScript happy:
+
+```tsx
+const Button = styled("button", {
+  base: "inline-flex items-center gap-2",
+  defaultProps: {
+    type: "button",
+  },
+});
+
+<Button />;             // `type` inferred as optional
+<Button type="submit" />; // Still overridable
+<Button as="a" href="/docs" />; // Works with polymorphic `as`
 ```
 
 ### Polymorphic Components with "as" Prop

@@ -188,6 +188,29 @@ import { styled } from "classname-variants/react";
 const Button = styled("button", "bg-transparent border p-2");
 ```
 
+### Default props
+
+If your underlying element (or custom component) expects props that you want to
+provide automatically, you can use the `defaultProps` option. All defaulted
+props become optional in TypeScript – even when you later render the component
+with a polymorphic `as` prop.
+
+```tsx
+const Button = styled("button", {
+  base: "inline-flex items-center gap-2",
+  defaultProps: {
+    type: "button",
+  },
+});
+
+// `type` is optional but still overridable
+<Button />;
+<Button type="submit" />;
+
+// Works together with `as`
+<Button as="a" href="/docs" />;
+```
+
 ### Styling custom components
 
 You can style any custom React/Preact component as long as they accept a `className` prop (or `class` in case of Preact).
