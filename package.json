@@ -41,7 +41,7 @@
     "lint:fix": "biome check --write --unsafe .",
     "start": "npx vite",
     "test": "vitest",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && vitest --run"
   },
   "keywords": [
     "tailwind",
