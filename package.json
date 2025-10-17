@@ -1,6 +1,6 @@
 {
   "name": "classname-variants",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Variant API for plain class names",
   "author": "Felix Gnass <fgnass@gmail.com>",
   "license": "MIT",
