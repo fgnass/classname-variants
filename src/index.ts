@@ -22,6 +22,7 @@ export interface VariantsConfig<V extends Variants = {}> {
   variants: V;
   compoundVariants?: CompoundVariant<V>[];
   defaultVariants?: Partial<OptionsOf<V>>;
+  forwardProps?: ReadonlyArray<Extract<keyof V, string>>;
 }
 
 /**

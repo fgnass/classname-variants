@@ -29,6 +29,21 @@ type VariantProps<
   V extends Variants = C["variants"],
 > = VariantOptions<C> & { className?: string };
 
+type ForwardedVariantKeys<C> = C extends {
+  forwardProps?: ReadonlyArray<infer K>;
+  variants: infer V;
+}
+  ? V extends Variants
+    ? Extract<K, keyof V>
+    : never
+  : never;
+
+type NonForwardedVariantKeys<C> = C extends { variants: infer V }
+  ? V extends Variants
+    ? Exclude<keyof V, ForwardedVariantKeys<C>>
+    : never
+  : never;
+
 export function variantProps<
   C extends VariantsConfig<V>,
   V extends Variants = C["variants"],
@@ -44,17 +59,43 @@ export function variantProps<
       }
     }
 
+    if (config.forwardProps) {
+      for (const name of config.forwardProps) {
+        if (!config.variants || !(name in config.variants)) continue;
+
+        if (Object.hasOwn(props, name)) {
+          result[name] = (props as Record<string, unknown>)[name];
+          continue;
+        }
+
+        if (
+          config.defaultVariants &&
+          Object.hasOwn(config.defaultVariants, name)
+        ) {
+          result[name] =
+            config.defaultVariants[name as keyof typeof config.defaultVariants];
+        }
+      }
+    }
+
     // Add the optionally passed className prop for chaining
     result.className = classNames.combine(
       variantClassName(props),
       props.className,
     );
 
-    return result as { className: string } & Omit<P, keyof C["variants"]>;
+    return result as { className: string } & Omit<
+      P,
+      NonForwardedVariantKeys<C>
+    >;
   };
 }
 
-type VariantsOf<T, V> = T extends VariantsConfig ? V : {};
+type VariantsOf<T> = T extends { variants: infer TV }
+  ? TV extends Variants
+    ? TV
+    : {}
+  : {};
 
 type AsProps<T extends ElementType = ElementType> = {
   as?: T;
@@ -80,7 +121,7 @@ type PolymorphicComponentProps<V, T extends ElementType> = AsProps<T> &
 export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
-  V extends Variants = VariantsOf<C, C["variants"]>,
+  V extends Variants = VariantsOf<C>,
   Defaults extends Partial<ComponentProps<T>> | undefined = undefined,
 >(
   type: T,

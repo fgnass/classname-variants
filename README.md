@@ -211,6 +211,26 @@ const Button = styled("button", {
 <Button as="a" href="/docs" />;
 ```
 
+### Forwarding props
+
+When a variant mirrors an existing prop (such as `disabled` on a button), add
+it to `forwardProps` so the resolved value is passed through to the rendered
+element or custom component.
+
+```tsx
+const Button = styled("button", {
+  variants: {
+    disabled: {
+      true: "cursor-not-allowed",
+    },
+  },
+  forwardProps: ["disabled"],
+});
+
+// Renders with both the class name and the DOM `disabled` prop applied.
+<Button disabled />;
+```
+
 ### Styling custom components
 
 You can style any custom React/Preact component as long as they accept a `className` prop (or `class` in case of Preact).

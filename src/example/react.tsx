@@ -43,6 +43,9 @@ const Button = styled("button", {
       true: "rounded-full",
       false: "rounded-sm",
     },
+    disabled: {
+      true: "cursor-not-allowed",
+    },
   },
   compoundVariants: [
     {
@@ -56,6 +59,7 @@ const Button = styled("button", {
   defaultProps: {
     type: "button",
   },
+  forwardProps: ["disabled"],
 });
 
 export const StyledWithoutVariants = styled("div", {
@@ -84,6 +88,10 @@ export const ExpectErrors = styled("div", {
     //@ts-expect-error
     outlined: true,
   },
+  forwardProps: [
+    //@ts-expect-error
+    "outlined",
+  ],
 });
 
 export function WithErrors() {
