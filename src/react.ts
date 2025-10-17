@@ -33,16 +33,15 @@ type ForwardedVariantKeys<C> = C extends {
   forwardProps?: ReadonlyArray<infer K>;
   variants: infer V;
 }
-  ? V extends Variants
-    ? Extract<K, keyof V>
-    : never
+  ? Extract<K, keyof V>
   : never;
 
-type NonForwardedVariantKeys<C> = C extends { variants: infer V }
-  ? V extends Variants
-    ? Exclude<keyof V, ForwardedVariantKeys<C>>
-    : never
-  : never;
+type VariantPropKeys<C> = C extends { variants: infer V } ? keyof V : never;
+
+type ForwardedVariantProps<C extends VariantsConfig<any>> = Pick<
+  VariantOptions<C>,
+  ForwardedVariantKeys<C>
+>;
 
 export function variantProps<
   C extends VariantsConfig<V>,
@@ -84,10 +83,8 @@ export function variantProps<
       props.className,
     );
 
-    return result as { className: string } & Omit<
-      P,
-      NonForwardedVariantKeys<C>
-    >;
+    return result as { className: string } & Omit<P, VariantPropKeys<C>> &
+      ForwardedVariantProps<C>;
   };
 }
 

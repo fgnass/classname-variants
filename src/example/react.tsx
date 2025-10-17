@@ -142,7 +142,9 @@ export function ReactApp() {
         <h1>Hello</h1>
         <p>world</p>
       </Card>
-      <Card as="a">Link</Card>
+      <Card as="a" href="https://example.com">
+        Link
+      </Card>
       <Card as={CustomComponent} title="Test" />
     </div>
   );
