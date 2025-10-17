@@ -313,11 +313,7 @@ const button = variants({
 });
 ```
 
-You can then add the following line to your `settings.json`:
-
-```
-"tailwindCSS.experimental.classRegex": ["tw`(.+?)`"]
-```
+You can then set the _Tailwind CSS: Class Functions_ option to `tw`.
 
 > [!NOTE]
 > The `tw` helper function is just an alias for [`String.raw()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw) which has the nice side effect backslashes are not treated as [escape character in JSX](https://tailwindcss.com/docs/adding-custom-styles#handling-whitespace).

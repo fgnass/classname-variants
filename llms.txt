@@ -24,6 +24,7 @@ This library provides a variant API for generating class names based on componen
 - Boolean variants (true/false)
 - Default variants
 - Compound variants (combinations of multiple variant states)
+- Forwarding variant values via `forwardProps`
 - Polymorphic components with "as" prop
 - Optional `defaultProps` with strong typing (defaulted props become optional while respecting polymorphic `as`)
 - Custom class name combination strategies
@@ -61,6 +62,7 @@ src/
   defaultVariants?: {...},          // Default values
   defaultProps?: {...},             // Defaulted non-variant props (e.g. { type: "button" })
   compoundVariants?: [...]          // Conditional class combinations
+  forwardProps?: ["disabled", ...]  // Variant keys to pass through as real props
 }
 ```
 
@@ -71,6 +73,7 @@ The library uses advanced TypeScript features to:
 - Convert "true"/"false" keys to boolean props
 - Infer optionality for props supplied via `defaultProps` while preserving `as` polymorphism
 - Provide full autocomplete and type checking
+- Preserve variant prop ergonomics when using `forwardProps`; forwarded keys remain strongly typed and emitted alongside the generated className
 
 ## Usage Examples
 
@@ -116,6 +119,24 @@ const Button = styled("button", {
 <Button />;             // `type` inferred as optional
 <Button type="submit" />; // Still overridable
 <Button as="a" href="/docs" />; // Works with polymorphic `as`
+```
+
+### Forwarding Variant Values
+Mirror a variant onto the rendered element to toggle native behaviour:
+
+```tsx
+const Button = styled("button", {
+  base: "inline-flex items-center gap-2",
+  variants: {
+    disabled: {
+      true: "opacity-50",
+    },
+  },
+  forwardProps: ["disabled"],
+});
+
+// Applies the class names *and* the DOM `disabled` prop
+<Button disabled />;
 ```
 
 ### Polymorphic Components with "as" Prop
