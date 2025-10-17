@@ -46,7 +46,7 @@ type BooleanVariants<V extends Variants> = {
  */
 type DefaultVariants<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 > = {
   [K in keyof V as K extends keyof C["defaultVariants"]
     ? K
@@ -58,7 +58,7 @@ type DefaultVariants<
  */
 type OptionalVariantNames<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 > = keyof BooleanVariants<V> | keyof DefaultVariants<C>;
 
 /**
@@ -72,7 +72,7 @@ type OptionalVariantNames<
  */
 type OptionalOptions<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 > = {
   [K in keyof V as K extends OptionalVariantNames<C>
     ? K
@@ -88,7 +88,7 @@ type OptionalOptions<
  */
 type RequiredOptions<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 > = {
   [K in keyof V as K extends OptionalVariantNames<C>
     ? never
@@ -119,7 +119,7 @@ type OptionsOf<V extends Variants> = {
  */
 export type VariantOptions<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 > = RequiredOptions<C> & OptionalOptions<C>;
 
 /**
@@ -138,7 +138,7 @@ export const classNames = {
 
 export function variants<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 >(config: Simplify<C>) {
   const { base, variants, compoundVariants, defaultVariants } = config;
 
@@ -155,12 +155,12 @@ export function variants<
       defaultVariants?.[name] ??
       (isBooleanVariant(name) ? false : undefined);
 
-    for (let name in variants) {
+    for (const name in variants) {
       const selected = getSelected(name);
       if (selected !== undefined) classes.push(variants[name]?.[selected]);
     }
 
-    for (let { variants, className } of compoundVariants ?? []) {
+    for (const { variants, className } of compoundVariants ?? []) {
       const isSelected = (name: string) => getSelected(name) === variants[name];
       if (Object.keys(variants).every(isSelected)) {
         classes.push(className);

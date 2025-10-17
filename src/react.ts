@@ -1,19 +1,19 @@
 import {
-  ComponentProps,
+  type ComponentProps,
   createElement,
-  ElementType,
+  type ElementType,
   forwardRef,
-  ReactElement,
-  Ref,
+  type ReactElement,
+  type Ref,
 } from "react";
 
 import {
-  Variants,
-  variants,
-  VariantsConfig,
-  VariantOptions,
-  Simplify,
   classNames,
+  type Simplify,
+  type VariantOptions,
+  type Variants,
+  type VariantsConfig,
+  variants,
 } from "./index.js";
 
 /**
@@ -26,19 +26,19 @@ export type VariantPropsOf<T> = T extends (props: infer P) => any ? P : never;
  */
 type VariantProps<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 > = VariantOptions<C> & { className?: string };
 
 export function variantProps<
   C extends VariantsConfig<V>,
-  V extends Variants = C["variants"]
+  V extends Variants = C["variants"],
 >(config: Simplify<C>) {
   const variantClassName = variants<C>(config);
   return <P extends VariantProps<C>>(props: P) => {
     const result: any = {};
 
     // Pass-through all unrelated props
-    for (let prop in props) {
+    for (const prop in props) {
       if (config.variants && !(prop in config.variants)) {
         result[prop] = props[prop];
       }
@@ -47,7 +47,7 @@ export function variantProps<
     // Add the optionally passed className prop for chaining
     result.className = classNames.combine(
       variantClassName(props),
-      props.className
+      props.className,
     );
 
     return result as { className: string } & Omit<P, keyof C["variants"]>;
@@ -67,7 +67,7 @@ type DefaultedKeys<Props, Defaults> = Extract<
 >;
 
 type WithDefaultProps<Props, Defaults> = [CleanDefaults<Defaults>] extends [
-  never
+  never,
 ]
   ? Props
   : Omit<Props, DefaultedKeys<Props, Defaults>> &
@@ -81,54 +81,58 @@ export function styled<
   T extends ElementType,
   C extends VariantsConfig<V>,
   V extends Variants = VariantsOf<C, C["variants"]>,
-  Defaults extends Partial<ComponentProps<T>> | undefined = undefined
+  Defaults extends Partial<ComponentProps<T>> | undefined = undefined,
 >(
   type: T,
   config:
     | string
     | { base: string; defaultProps?: Defaults }
-    | (Simplify<C> & { defaultProps?: Defaults })
+    | (Simplify<C> & { defaultProps?: Defaults }),
 ): <As extends ElementType = T>(
   props: WithDefaultProps<
     PolymorphicComponentProps<
       typeof config extends string
         ? {}
         : typeof config extends {
-            base: string;
-            variants?: undefined;
-            compoundVariants?: undefined;
-            defaultVariants?: undefined;
-          }
-        ? {}
-        : VariantOptions<C>,
+              base: string;
+              variants?: undefined;
+              compoundVariants?: undefined;
+              defaultVariants?: undefined;
+            }
+          ? {}
+          : VariantOptions<C>,
       As
     >,
     Defaults
-  >
+  >,
 ) => ReactElement | null {
   const styledProps =
     typeof config === "string"
       ? variantProps({ base: config, variants: {} })
       : "variants" in (config as Exclude<typeof config, string>)
-      ? variantProps(config as Simplify<C>)
-      : variantProps({
-          base: (config as Exclude<typeof config, string> & { base: string }).base,
-          variants: {},
-        });
+        ? variantProps(config as Simplify<C>)
+        : variantProps({
+            base: (config as Exclude<typeof config, string> & { base: string })
+              .base,
+            variants: {},
+          });
 
   const defaultProps =
-    typeof config === "string"
-      ? undefined
-      : (config.defaultProps as Defaults);
+    typeof config === "string" ? undefined : (config.defaultProps as Defaults);
 
   const toRecord = (value: unknown): Record<string, unknown> =>
-    value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+    value && typeof value === "object"
+      ? (value as Record<string, unknown>)
+      : {};
 
   const readClassName = (value: unknown) =>
     typeof value === "string" ? value : undefined;
 
   const Component = forwardRef(
-    ({ as, ...props }: AsProps & Record<string, unknown>, ref: Ref<Element>) => {
+    (
+      { as, ...props }: AsProps & Record<string, unknown>,
+      ref: Ref<Element>,
+    ) => {
       const defaultsRecord = toRecord(defaultProps);
       const propsRecord = props;
 
@@ -139,28 +143,28 @@ export function styled<
 
       merged.className = classNames.combine(
         readClassName(defaultsRecord.className),
-        readClassName(propsRecord.className)
+        readClassName(propsRecord.className),
       );
 
       return createElement(as ?? type, { ...styledProps(merged), ref });
-    }
+    },
   ) as <As extends ElementType = T>(
     props: WithDefaultProps<
       PolymorphicComponentProps<
         typeof config extends string
           ? {}
           : typeof config extends {
-              base: string;
-              variants?: undefined;
-              compoundVariants?: undefined;
-              defaultVariants?: undefined;
-            }
-          ? {}
-          : VariantOptions<C>,
+                base: string;
+                variants?: undefined;
+                compoundVariants?: undefined;
+                defaultVariants?: undefined;
+              }
+            ? {}
+            : VariantOptions<C>,
         As
       >,
       Defaults
-    >
+    >,
   ) => ReactElement | null;
   return Component;
 }

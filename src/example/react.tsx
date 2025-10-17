@@ -1,3 +1,4 @@
+// biome-ignore lint/correctness/noUnusedImports: React import required for JSX runtime configuration
 import React from "react";
 import { styled } from "../react";
 
@@ -97,7 +98,7 @@ export function WithErrors() {
       <Card foo>Unknown property</Card>
 
       {/* @ts-expect-error */}
-      <Button size="medium" color="foo">
+      <Button color="foo" size="medium">
         Invalid variant
       </Button>
 
@@ -115,16 +116,16 @@ export function WithErrors() {
 export function ReactApp() {
   return (
     <div className="flex justify-center items-center pt-8 gap-4 flex-wrap">
-      <Button size="medium" onClick={console.log}>
+      <Button onClick={console.log} size="medium">
         Neutral
       </Button>
-      <Button size="medium" rounded>
+      <Button rounded size="medium">
         Neutral + Rounded
       </Button>
-      <Button size="medium" color="accent" outlined>
+      <Button color="accent" outlined size="medium">
         Accent + Outlined
       </Button>
-      <Button size="medium" color="accent" disabled>
+      <Button color="accent" disabled size="medium">
         Disabled
       </Button>
       <TitleCard />
