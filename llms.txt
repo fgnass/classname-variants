@@ -22,12 +22,12 @@ This library provides a variant API for generating class names based on componen
 - Type-safe variant definitions with full TypeScript inference
 - Support for required and optional variants
 - Boolean variants (true/false)
-- Default variants
+- Default variants via `defaultVariants` (note: NOT "defaults")
 - Compound variants (combinations of multiple variant states)
 - Forwarding variant values via `forwardProps`
 - Polymorphic components with "as" prop
 - Optional `defaultProps` with strong typing (defaulted props become optional while respecting polymorphic `as`)
-- Custom class name combination strategies
+- Works with any CSS framework (Tailwind, CSS modules, etc.) without additional dependencies
 
 ## File Structure
 
@@ -59,8 +59,8 @@ src/
       [optionName]: "class-names"
     }
   },
-  defaultVariants?: {...},          // Default values
-  defaultProps?: {...},             // Defaulted non-variant props (e.g. { type: "button" })
+  defaultVariants?: {...},          // IMPORTANT: Use "defaultVariants" for default variant values
+  defaultProps?: {...},             // DIFFERENT: Use "defaultProps" for non-variant props (e.g. { type: "button" })
   compoundVariants?: [...]          // Conditional class combinations
   forwardProps?: ["disabled", ...]  // Variant keys to pass through as real props
 }
@@ -153,8 +153,13 @@ const Button = styled("button", { variants: {...} });
 
 ### Tailwind CSS Integration
 
-#### Using tailwind-merge for Conflict Resolution
+The library works with Tailwind CSS out of the box without any additional dependencies.
+
+#### OPTIONAL: Using tailwind-merge for Class Conflict Resolution
+**This is completely optional.** Only consider using tailwind-merge if you need to resolve conflicting Tailwind classes (e.g., when allowing className overrides). Most use cases don't need this - design your variants to avoid conflicts instead to reduce complexity and overhead.
+
 ```ts
+// Only if you really need class merging:
 import { classNames } from "classname-variants";
 import { twMerge } from "tailwind-merge";
 
