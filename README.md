@@ -12,7 +12,28 @@ Library to create type-safe components that render their class name based on a s
 
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/classname-variants)
 
-# Examples
+## Installation
+
+```bash
+npm install classname-variants
+```
+
+## Import Paths
+
+```ts
+// Core — vanilla DOM, no framework dependency
+import { variants, classNames, tw } from "classname-variants";
+
+// React — styled components, variantProps, type utilities
+import { styled, variantProps, tw } from "classname-variants/react";
+import type { VariantPropsOf } from "classname-variants/react";
+
+// Preact — same API, accepts both `class` and `className`
+import { styled, variantProps, tw } from "classname-variants/preact";
+import type { VariantPropsOf } from "classname-variants/preact";
+```
+
+## Examples
 
 Here is an example that uses React and Tailwind CSS:
 
@@ -36,11 +57,9 @@ function UsageExample() {
 }
 ```
 
-[![Edit classname-variants/react](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/classname-variants-react-3bzjl?fontsize=14&hidenavigation=1&theme=dark)
-
 While the library has been designed with tools like Tailwind in mind, it can be also used with custom classes or CSS modules:
 
-## Preact + CSS modules
+### Preact + CSS modules
 
 ```tsx
 import { styled } from "classname-variants/preact";
@@ -56,7 +75,7 @@ const Button = styled("button", {
 });
 ```
 
-## Vanilla DOM
+### Vanilla DOM
 
 The core of the library is completely framework-agnostic:
 
@@ -80,7 +99,7 @@ document.write(`
 `);
 ```
 
-# API
+## API
 
 ### Defining variants
 
@@ -120,6 +139,8 @@ Variants can be typed as `boolean` by using `true` / `false` as key:
 ```ts
 <Button primary>Click Me!</Button>
 ```
+
+### Compound variants
 
 The `compoundVariants` option can be used to apply class names based on a combination of other variants:
 
@@ -231,6 +252,71 @@ const Button = styled("button", {
 <Button disabled />;
 ```
 
+### Chaining additional class names
+
+Styled components accept a `className` prop that gets merged with the variant output. This is useful for one-off overrides:
+
+```tsx
+<Button className="mt-4" size="large">Submit</Button>
+```
+
+The Preact adapter accepts both `class` and `className` — use whichever you prefer:
+
+```tsx
+<Button class="mt-4" size="large">Submit</Button>
+```
+
+### Ref forwarding
+
+All `styled()` components support refs via `React.forwardRef`:
+
+```tsx
+const Input = styled("input", {
+  base: "border rounded px-2",
+  variants: { ... },
+});
+
+const ref = useRef<HTMLInputElement>(null);
+<Input ref={ref} />;
+```
+
+### `variantProps()`
+
+The lower-level `variantProps()` function lets you separate variant logic from rendering. This is useful for headless components or when you need more control:
+
+```tsx
+import { variantProps } from "classname-variants/react";
+
+const buttonProps = variantProps({
+  base: "rounded px-4 py-2",
+  variants: {
+    intent: {
+      primary: "bg-teal-500 text-white",
+      secondary: "bg-slate-200",
+    },
+  },
+});
+
+function Button(props) {
+  // Extracts variant props, returns { className, ...rest }
+  const { className, ...rest } = buttonProps(props);
+  return <button className={className} {...rest} />;
+}
+```
+
+### `VariantPropsOf<T>`
+
+Use this utility type to extract the variant props accepted by a `variantProps` function — helpful when building wrapper components:
+
+```tsx
+import { variantProps, type VariantPropsOf } from "classname-variants/react";
+
+const buttonProps = variantProps({ ... });
+
+type ButtonProps = VariantPropsOf<typeof buttonProps>;
+// { intent: "primary" | "secondary"; className?: string }
+```
+
 ### Styling custom components
 
 You can style any custom React/Preact component as long as they accept a `className` prop (or `class` in case of Preact).
@@ -293,7 +379,24 @@ import { twMerge } from "tailwind-merge";
 classNames.combine = twMerge;
 ```
 
-# Tailwind IntelliSense
+## Why classname-variants?
+
+### vs clsx / classnames
+
+- **Type safety** — full TypeScript inference for variant props instead of manual conditional logic
+- **Variant system** — built-in support for default values, compound variants, and boolean variants
+- **Framework bindings** — `styled()` creates ready-to-use React/Preact components
+
+### vs class-variance-authority (cva)
+
+- **Zero dependencies** — no external runtime dependencies
+- **Framework integration** — built-in `styled()` API with polymorphic `as` prop, ref forwarding, and `defaultProps`
+- **Prop forwarding** — `forwardProps` maps variant values to DOM attributes (e.g. `disabled`)
+- **TypeScript-first** — designed around type inference rather than requiring manual `VariantProps` extraction
+
+If you're coming from cva: `cva()` maps to `variants()`, and `VariantProps<typeof x>` maps to `VariantPropsOf<typeof x>`.
+
+## Tailwind IntelliSense
 
 In order to get auto-completion for the CSS classes themselves, you can use the [Tailwind CSS IntelliSense](https://github.com/tailwindlabs/tailwindcss-intellisense) plugin for VS Code. In order to make it recognize the strings inside your variants-config, you have to somehow mark them and configure the plugin accordingly.
 
@@ -320,10 +423,10 @@ You can then set the _Tailwind CSS: Class Functions_ option to `tw`.
 
 In order to get type coverage even for your Tailwind classes, you can use a tool like [tailwind-ts](https://github.com/mathieutu/tailwind-ts).
 
-# For AI Assistants
+## For AI Assistants
 
 For comprehensive technical documentation optimized for LLMs, see [`llms.txt`](./llms.txt).
 
-# License
+## License
 
 MIT

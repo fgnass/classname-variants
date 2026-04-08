@@ -16,7 +16,14 @@ This library provides a variant API for generating class names based on componen
 
 ### Framework Integrations
 - `src/react.ts` - React-specific bindings with `styled()` and `variantProps()` functions, including runtime merging and type inference for `defaultProps`
-- `src/preact.ts` - Preact-specific bindings (similar to React but uses Preact's JSX) with equivalent `defaultProps` support
+- `src/preact.ts` - Preact-specific bindings (similar to React but uses Preact's JSX with `class` prop) with equivalent `defaultProps` support
+
+### Class Application Order
+When generating class names, the library combines them in this order:
+1. `base` classes (always applied)
+2. Variant classes (based on selected or default variant values)
+3. Compound variant classes (when all conditions match)
+4. User-supplied `className` prop (React/Preact only, via chaining)
 
 ### Key Features
 - Type-safe variant definitions with full TypeScript inference
@@ -27,6 +34,8 @@ This library provides a variant API for generating class names based on componen
 - Forwarding variant values via `forwardProps`
 - Polymorphic components with "as" prop
 - Optional `defaultProps` with strong typing (defaulted props become optional while respecting polymorphic `as`)
+- `className` prop chaining on styled components (user classes merged with variant output)
+- Ref forwarding — all `styled()` components use `forwardRef` internally
 - Works with any CSS framework (Tailwind, CSS modules, etc.) without additional dependencies
 
 ## File Structure
@@ -92,9 +101,9 @@ import { styled, tw } from "classname-variants/react"
 // Preact  
 import { styled, tw } from "classname-variants/preact"
 
-// Low-level API (rarely used directly)
-import { variantProps } from "classname-variants/react"
-import { variantProps } from "classname-variants/preact"
+// Low-level API and type utilities
+import { variantProps, type VariantPropsOf } from "classname-variants/react"
+import { variantProps, type VariantPropsOf } from "classname-variants/preact"
 ```
 
 ### Styled Components Without Variants
@@ -137,6 +146,44 @@ const Button = styled("button", {
 
 // Applies the class names *and* the DOM `disabled` prop
 <Button disabled />;
+```
+
+### className Prop Chaining
+Styled components accept an additional `className` prop that gets merged with the variant output:
+
+```tsx
+<Button className="mt-4" size="large">Submit</Button>
+```
+
+The Preact adapter accepts both `class` and `className` — they are merged together, so either works:
+
+```tsx
+<Button class="mt-4" size="large">Submit</Button>
+```
+
+### variantProps() for Headless Components
+The lower-level `variantProps()` function separates variant logic from rendering, useful for headless components or custom wrappers:
+
+```tsx
+import { variantProps, type VariantPropsOf } from "classname-variants/react";
+
+const buttonProps = variantProps({
+  base: "rounded px-4 py-2",
+  variants: {
+    intent: {
+      primary: "bg-teal-500 text-white",
+      secondary: "bg-slate-200",
+    },
+  },
+});
+
+// Extract the variant prop types for the wrapper component
+type ButtonProps = VariantPropsOf<typeof buttonProps>;
+
+function Button(props: ButtonProps) {
+  const { className, ...rest } = buttonProps(props);
+  return <button className={className} {...rest} />;
+}
 ```
 
 ### Polymorphic Components with "as" Prop
